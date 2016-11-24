@@ -1,0 +1,42 @@
+{
+  "service":"DemoIoT",
+  "servicePath":"/",
+  "host":"http://localhost:8080",
+  "in":[
+    {
+      "id":"Room.*",
+      "type":"Room",
+      "isPattern":true,
+      "providers":[
+        "http://localhost:8081"
+      ],
+      "attributes":[
+        { "name":"temperature", "type":"double" },
+        { "name":"humidity", "type":"double" },
+        { "name":"type", "type":"string" },
+        { "name":"timeStamp", "type":"long" }
+
+      ]
+    }
+  ],
+  "out":[
+    {
+      "id":"Alert1",
+      "type":"Alert",
+      "attributes":[
+        { "name":"temperature", "type":"double" },
+        { "name":"humidity", "type":"double" },
+        { "name":"timeStamp", "type":"long" }
+      ],
+      "brokers": [
+        {
+          "url":"http://localhost:8081",
+          "serviceName":"DemoIoT",
+          "servicePath":"/" }
+      ]
+    }
+  ],
+  "statements":[
+    "INSERT INTO Alert SELECT type as id, temperature, humidity, timeStamp FROM Room WHERE temperature > 40 GROUP BY type"
+  ]
+}
